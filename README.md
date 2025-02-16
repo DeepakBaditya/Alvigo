@@ -13,7 +13,7 @@ git clone https://github.com/DeepakBaditya/Alvigo.git
 ```
 ### **2️⃣ Navigate to the Frontend Directory**
 ```sh
-cd frontend
+cd Alvigo/frontend
 ```
 ### **3️⃣ Install Dependencies**
 ```sh
