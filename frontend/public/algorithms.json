@@ -1,0 +1,40 @@
+{
+    "algorithms": [
+      {
+        "Dynamic Programming Approach": {
+          "Longest Common Subsequence": {
+            "code": "code",
+            "time complexity": "O(n * m)"
+          },
+          "Knapsack Problem": {
+            "code": "code",
+            "time complexity": "O(n * W)"
+          }
+        }
+      },
+      {
+        "Greedy Approach": {
+          "Huffman Coding": {
+            "code": "code",
+            "time complexity": "O(n log n)"
+          },
+          "Activity Selection": {
+            "code": "code",
+            "time complexity": "O(n log n)"
+          }
+        }
+      },
+      {
+        "Divide and Conquer": {
+          "Merge Sort": {
+            "code": "code",
+            "time complexity": "O(n log n)"
+          },
+          "Quick Sort": {
+            "code": "code",
+            "time complexity": "O(n log n)"
+          }
+        }
+      }
+    ]
+  }
