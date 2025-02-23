@@ -1,4 +1,5 @@
 import { Category } from "@/types/algorithm-context";
+import Link from "next/link";
 
 async function getCategories() {
   const res = await fetch("http://localhost:3000/api/categories");
@@ -36,12 +37,13 @@ const Dashboard = async () => {
           <h2 className="text-2xl font-bold mb-4">{category.name}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {category.algorithms.map((algorithm) => (
-              <div
+              <Link
+                href={`dashboard/algorithm/${algorithm._id}`}
                 key={algorithm._id}
                 className="p-4 border rounded-lg shadow-md hover:shadow-lg transition"
               >
                 <h3 className="text-lg font-semibold">{algorithm.title}</h3>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
