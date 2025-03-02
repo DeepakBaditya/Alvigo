@@ -2,7 +2,7 @@ export interface Algorithm {
   _id: string;
   title: string;
   category: string;
-  code: string;
+  codePath: string;
   timecomplexity: string;
 }
 
