@@ -11,7 +11,6 @@ async function getCategories() {
 
 const Dashboard = async () => {
   const categories = await getCategories();
-  console.log(categories);
   return (
     <div className="container mx-auto p-4">
       {/* Categories Horizontal Scroll Bar */}

@@ -50,17 +50,20 @@ const AlgorithmPage = async ({ params }: { params: { id: string } }) => {
   const fileContent = await getFileContent(algorithm.codePath);
 
   return (
-    <div className="flex flex-col">
-      <div className="flex w-full h-screen">
-        <div className="p-5 w-1/2">
-          <InputForm />
-        </div>
-        <div className="p-10 w-1/2">
-          <CodeBlock fileContent={fileContent} fileType="python" />
+    <div className="relative min-h-screen w-full bg-black">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_1px,_transparent_1px)] bg-[size:20px_20px]">
+        <div className="flex flex-col">
+          <div className="flex w-full h-screen">
+            <div className="p-5 w-1/2">
+              <InputForm />
+            </div>
+            <div className="p-10 w-1/2">
+              <CodeBlock fileContent={fileContent} fileType="python" />
+            </div>
+          </div>
+          <Animation />
         </div>
       </div>
-      <AnimationController />
-      <Animation />
     </div>
   );
 };

@@ -22,11 +22,11 @@ export default function FormComponent() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto bg-white shadow-md rounded-lg">
+    <div className="p-4 max-w-md mx-auto bg-black shadow-md rounded-lg">
       <h2 className="text-xl font-bold mb-4">Simple Form</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block mb-1">First Input</label>
+          <label className="block mb-1">Input Array</label>
           <input
             {...register("firstInput", { required: "This field is required" })}
             className="w-full p-2 border rounded"
@@ -34,18 +34,6 @@ export default function FormComponent() {
           />
           {errors.firstInput && (
             <p className="text-red-500 text-sm">{errors.firstInput.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block mb-1">Second Input</label>
-          <input
-            {...register("secondInput", { required: "This field is required" })}
-            className="w-full p-2 border rounded"
-            type="text"
-          />
-          {errors.secondInput && (
-            <p className="text-red-500 text-sm">{errors.secondInput.message}</p>
           )}
         </div>
 
