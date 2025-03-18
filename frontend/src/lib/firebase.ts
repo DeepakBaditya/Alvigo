@@ -7,16 +7,16 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_APIKEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
+  apiKey: "AIzaSyBy3tYcoZnI6-L0BbZQC15S7FvK-NIc6Uk",
+  authDomain: "alvigo-8bc81.firebaseapp.com",
+  projectId: "alvigo-8bc81",
+  storageBucket: "alvigo-8bc81.firebasestorage.app",
+  messagingSenderId: "690168012047",
+  appId: "1:690168012047:web:3cfc7dd1a7bcaec1e7327a",
 };
 
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export { db };

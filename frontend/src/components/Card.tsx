@@ -1,11 +1,17 @@
+import Link from "next/link";
+
 interface CardProps {
   title: string;
+  href: string;
 }
 
-export const Card: React.FC<CardProps> = ({ title }) => {
+export const Card: React.FC<CardProps> = ({ title, href }) => {
   return (
-    <div className=" bg-black rounded-2xl p-5 flex flex-col justify-around cursor-pointer">
-      <div className="text-4xl font-bold text-white">{title}</div>
-    </div>
+    <Link
+      href={href}
+      className=" bg-black rounded-2xl p-5 border cursor-pointer"
+    >
+      <div className="text-2xl font-bold text-white">{title}</div>
+    </Link>
   );
 };

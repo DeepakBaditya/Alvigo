@@ -1,34 +1,45 @@
 import React from "react";
-import InputForm from "@/components/InputForm";
-import CodeBlock from "@/components/CodeBlock";
 import path from "path";
 import { promises as fs } from "fs";
-import { Algorithm } from "@/types/algorithm-context";
-import AnimationController from "@/components/AnimationController";
-import Animation from "@/components/Animation";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import CodeBlock from "@/components/CodeBlock";
+import { algorithm } from "@/types/algorithm-context";
+import ArrayInput from "@/components/ArrayInput";
+import StringInput from "@/components/StringInput";
 
-type ApiResponse = {
-  algorithm: Algorithm;
-};
+export const getAlgorithmById = async (
+  id: string
+): Promise<algorithm | null> => {
+  try {
+    const docRef = doc(db, "algorithm", id);
+    const docSnap = await getDoc(docRef);
 
-const fetchAlgorithm = async (id: string) => {
-  const response = await fetch("http://localhost:3000/api/algorithm", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id }),
-  });
-
-  if (!response.ok) {
-    console.error("Failed to fetch algorithm:", response.statusText);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as algorithm;
+    } else {
+      console.error("No such document!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching document:", error);
     return null;
   }
-
-  const data: ApiResponse = await response.json();
-  return data.algorithm;
 };
 
-async function getFileContent(codePath: string) {
-  const filePath = path.join(process.cwd(), "src/algorithmCode", codePath);
+// Define input components
+const InputComponents: Record<string, React.FC<{ name: string }>> = {
+  array: ({ name }) => <ArrayInput />,
+  string: ({ name }) => <StringInput />,
+};
+
+// Function to read code file from local storage
+async function getFileContent(codePath: string): Promise<string> {
+  const filePath = path.join(
+    process.cwd(),
+    "src/algorithmCode",
+    `${codePath}.py`
+  );
   try {
     return await fs.readFile(filePath, "utf-8");
   } catch (error) {
@@ -37,32 +48,65 @@ async function getFileContent(codePath: string) {
   }
 }
 
-const AlgorithmPage = async ({ params }: { params: { id: string } }) => {
-  const id = params.id;
-  const algorithm = await fetchAlgorithm(id);
-
-  if (!algorithm || !algorithm.codePath) {
-    return <div>Error: Algorithm or code path not found</div>;
+// Main Page Component
+const AlgorithmPage = async ({ params }: { params?: { id?: string } }) => {
+  if (!params || !params.id) {
+    return <div className="text-center text-red-500">Invalid Algorithm ID</div>;
   }
+  // const [submittedArray, setSubmittedArray] = useState<number[]>([]);
 
-  console.log({ algorithm });
+  // const handleArraySubmit = (numbers: number[]) => {
+  //   setSubmittedArray(numbers); // Store the submitted array
+  //   console.log("Received Array:", numbers); // Debugging output
+  // };
+
+  const { id } = params;
+  const algorithm = await getAlgorithmById(id);
+  const inputs = algorithm?.input;
+  console.log(inputs);
+  if (!algorithm) {
+    return <div className="text-center text-red-500">Algorithm not found</div>;
+  }
 
   const fileContent = await getFileContent(algorithm.codePath);
 
   return (
-    <div className="relative min-h-screen w-full bg-black">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_1px,_transparent_1px)] bg-[size:20px_20px]">
-        <div className="flex flex-col">
-          <div className="flex w-full h-screen">
-            <div className="p-5 w-1/2">
-              <InputForm />
-            </div>
-            <div className="p-10 w-1/2">
-              <CodeBlock fileContent={fileContent} fileType="python" />
-            </div>
-          </div>
-          <Animation />
+    <div>
+      <div className="w-full h-fit p-8">
+        <div>
+          {(() => {
+            const elements = [];
+
+            for (const [type, count] of Object.entries(inputs ?? {}) as [
+              string,
+              number
+            ][]) {
+              if (!InputComponents[type]) {
+                console.error(`Missing input component for type: ${type}`);
+                continue; // Skip if component is missing
+              }
+
+              for (let index = 0; index < count; index++) {
+                const name = `${type}_${index}`;
+                const Component = InputComponents[type]; // Get the correct component
+
+                elements.push(
+                  <div key={name}>
+                    <Component name={name} />
+                  </div>
+                );
+              }
+            }
+
+            return <>{elements}</>;
+          })()}
         </div>
+      </div>
+      <div className="flex p-10">
+        <div className="w-1/2">
+          <CodeBlock fileContent={fileContent} fileType="python" />
+        </div>
+        <div className="w-1/2 h-[700px] bg-white"></div>
       </div>
     </div>
   );

@@ -1,25 +1,25 @@
-export interface Algorithm {
-  _id: string;
-  title: string;
-  category: string;
-  codePath: string;
-  timecomplexity: string;
-}
-
-export type AlgorithmCard = {
-  _id: string;
-  title: string;
+// Type for an individual algorithm
+export type categoryAlgorithm = {
+  id: string;
+  name: string;
 };
 
+// Type for a category document
 export type Category = {
   name: string;
-  numberOfAlgorithms: number;
-  algorithms: Pick<Algorithm, "_id" | "title">[];
+  algorithms: categoryAlgorithm[];
 };
 
-import { Dispatch, SetStateAction } from "react";
+// Type for the returned data (including the document ID)
+export type CategoryWithId = {
+  id: string; // Document ID
+} & Category; // Combine with the Category type
 
-// export type Algorithms = Algorithm[] |null
-
-export type Algorithms = any[] | null;
-export type SetAlgorithms = Dispatch<SetStateAction<Algorithms>>;
+export type algorithm = {
+  id: string;
+  name: string;
+  category: string;
+  codePath: string;
+  input: Array<Object>;
+  timeComplexity: string;
+};
