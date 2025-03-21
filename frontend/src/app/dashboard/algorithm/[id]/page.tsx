@@ -53,17 +53,10 @@ const AlgorithmPage = async ({ params }: { params?: { id?: string } }) => {
   if (!params || !params.id) {
     return <div className="text-center text-red-500">Invalid Algorithm ID</div>;
   }
-  // const [submittedArray, setSubmittedArray] = useState<number[]>([]);
-
-  // const handleArraySubmit = (numbers: number[]) => {
-  //   setSubmittedArray(numbers); // Store the submitted array
-  //   console.log("Received Array:", numbers); // Debugging output
-  // };
 
   const { id } = params;
   const algorithm = await getAlgorithmById(id);
   const inputs = algorithm?.input;
-  console.log(inputs);
   if (!algorithm) {
     return <div className="text-center text-red-500">Algorithm not found</div>;
   }

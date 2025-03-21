@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation"; // ✅ Use useParams() instead of props
+import { useParams } from "next/navigation";
 import CategoryCard from "@/components/CategoryCard";
 import { categoryAlgorithm } from "@/types/algorithm-context";
 import { Card } from "@/components/Card";
 
 const CategoryPage = () => {
-  const params = useParams(); // ✅ Unwrap params correctly
+  const params = useParams();
   const categoryName = decodeURIComponent(params.category as string);
 
   const [algorithms, setAlgorithms] = useState<categoryAlgorithm[]>([]);

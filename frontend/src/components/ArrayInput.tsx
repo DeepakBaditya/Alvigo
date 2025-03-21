@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useDataStore } from "@/store/useDataStore";
 
 interface NumberArrayInputProps {
   label?: string;
@@ -12,6 +13,7 @@ const NumberArrayInput: React.FC<NumberArrayInputProps> = ({
   onSubmit,
 }) => {
   const [values, setValues] = useState<number[]>([]);
+  const setData = useDataStore((state) => state.setData);
 
   const handleChange = (index: number, newValue: string) => {
     if (!/^\d*$/.test(newValue)) return; // Allow only numbers
@@ -30,7 +32,7 @@ const NumberArrayInput: React.FC<NumberArrayInputProps> = ({
   const handleSubmit = () => {
     const finalValues = values.filter((num) => !isNaN(num)); // Remove NaN values
     if (onSubmit) onSubmit(finalValues);
-    console.log("Final Submitted Array:", finalValues);
+    setData(finalValues);
   };
 
   return (
