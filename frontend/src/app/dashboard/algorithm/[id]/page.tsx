@@ -98,6 +98,7 @@ const AlgorithmPage = async ({ params }: { params: { id: string } }) => {
         </div>
         <div className="w-1/2 h-[700px] bg-white"></div>
       </div>
+      <div className="w-full h-10 bg-green-500"></div>
     </div>
   );
 };
