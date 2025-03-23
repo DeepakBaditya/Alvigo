@@ -49,12 +49,9 @@ async function getFileContent(codePath: string): Promise<string> {
 }
 
 // Main Page Component
-const AlgorithmPage = async ({ params }: { params?: { id?: string } }) => {
-  if (!params || !params.id) {
-    return <div className="text-center text-red-500">Invalid Algorithm ID</div>;
-  }
+const AlgorithmPage = async ({ params }: { params: { id: string } }) => {
 
-  const { id } = params;
+  const { id } = await params;
   const algorithm = await getAlgorithmById(id);
   const inputs = algorithm?.input;
   if (!algorithm) {
