@@ -15,11 +15,15 @@ export type CategoryWithId = {
   id: string; // Document ID
 } & Category; // Combine with the Category type
 
+export type properties = {
+  timeComplexity: string;
+  spaceComplexity: string;
+};
 export type algorithm = {
   id: string;
   name: string;
   category: string;
   codePath: string;
-  input: Array<Object>;
-  timeComplexity: string;
+  input: Object;
+  properties: properties;
 };
