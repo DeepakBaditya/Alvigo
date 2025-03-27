@@ -1,5 +1,5 @@
 import { ALGORITHMS } from "@/constants/algorithms"; // Adjust path if needed
-import { Algorithm } from "@/types/algorithm-context";
+import { algorithm } from "@/types/algorithm-context";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
