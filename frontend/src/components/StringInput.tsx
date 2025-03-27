@@ -1,12 +1,29 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { useDataStore } from "@/store/useDataStore";
 
 const StringInput = () => {
+  const [input, setInput] = useState("");
+  const setData = useDataStore((state) => state.setData);
+
+  const handleStoreString = () => {
+    setData(input);
+  };
   return (
-    <input
-      type="text"
-      className="text-white border border-white  p-4 my-3 bg-transparent"
-      placeholder={`Enter text`}
-    />
+    <div className="bg-card p-6 rounded-lg shadow-lg my-5">
+      <h2 className="text-xl font-semibold mb-4">Input Array</h2>
+      <div className="flex gap-4">
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Enter String"
+          className="flex-1 text-black p-6"
+        />
+        <Button onClick={handleStoreString}>Update</Button>
+      </div>
+    </div>
   );
 };
 
