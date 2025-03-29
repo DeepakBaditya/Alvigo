@@ -27,3 +27,16 @@ export type algorithm = {
   input: Object;
   properties: properties;
 };
+
+export type Edge = {
+  from: number;
+  to: number;
+  weight: number;
+};
+
+export type mapInput = {
+  string1: string;
+  string2: string;
+};
+
+export type DataType = string | number[] | mapInput | Edge[] | null; // Can be a string, array, graph, or null
