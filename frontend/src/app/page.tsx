@@ -4,14 +4,21 @@ import Image from "next/image";
 import AnimatedHeading from "@/components/AnimatedHeading";
 import AnimatedSubheading from "@/components/AnimatedSubHeading";
 import logo from '../../public/logo.png';
-import sideImage from '../../public/he.gif';
+import sideImage from '../../public/sideImage.gif';
+import icon1 from '../../public/img1.png';
+import icon2 from '../../public/img2.png';
+import icon3 from '../../public/img3.png';
+import icon4 from '../../public/img4.png';
+import icon5 from '../../public/img5.png';
+import icon6 from '../../public/img6.png';
+import Footer from '../components/footer';
 
 export default function Home() {
   return (
     <div>
       {/* Navigation Bar */}
       <nav className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div className="flex justify-between h-14">
             <div className="flex items-center">
             <Image
@@ -73,31 +80,103 @@ export default function Home() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="mb-4 w-16 h-16 flex items-center justify-center rounded-full">
+              <Image 
+                src={icon1} 
+                alt="Search Icon" 
+                width={40} 
+                height={40} 
+                className="object-contain"
+              />
+            </div>
             <h3 className="text-xl font-medium text-gray-800 mb-3">Search Algorithms</h3>
             <p className="text-gray-600">
-              Visualize bubble sort, merge sort, quick sort and more with interactive animations.
+              Methods like Binary Search, Linear Search, etc., to find elements in data structures.
             </p>
           </div>
+
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div className="mb-4 w-16 h-16 flex items-center justify-center rounded-full">
+              <Image 
+                src={icon2} 
+                alt="Track Icon" 
+                width={50} 
+                height={50} 
+                className="object-contain"
+              />
+            </div>
             <h3 className="text-xl font-medium text-gray-800 mb-3">Track Algorithms</h3>
             <p className="text-gray-600">
-              See how Dijkstra's, A*, and other pathfinding algorithms work in real-time.
+              Tools or steps to monitor algorithm execution (e.g., variable changes, step counts).
             </p>
           </div>
+
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <h3 className="text-xl font-medium text-gray-800 mb-3">Track Algorithms</h3>
+          <div className="mb-4 w-16 h-16 flex items-center justify-center rounded-full">
+              <Image 
+                src={icon3} 
+                alt="Dynamic Icon" 
+                width={50} 
+                height={50} 
+                className="object-contain"
+              />
+            </div>
+            <h3 className="text-xl font-medium text-gray-800 mb-3">Dynamic Input</h3>
             <p className="text-gray-600">
-              See how Dijkstra's, A*, and other pathfinding algorithms work in real-time.
+              Feature allowing users to test algorithms with custom inputs for real-time analysis.
             </p>
           </div>
+
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <h3 className="text-xl font-medium text-gray-800 mb-3">Track Algorithms</h3>
+          <div className="mb-4 w-16 h-16 flex items-center justify-center rounded-full">
+              <Image 
+                src={icon4} 
+                alt="Graph Icon" 
+                width={45} 
+                height={45} 
+                className="object-contain"
+              />
+            </div>
+            <h3 className="text-xl font-medium text-gray-800 mb-3">Complexity Graphs</h3>
             <p className="text-gray-600">
-              See how Dijkstra's, A*, and other pathfinding algorithms work in real-time.
+              Charts comparing time/space complexity (O(n), O(log n), etc.) across algorithms.
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div className="mb-4 w-16 h-16 flex items-center justify-center rounded-full">
+              <Image 
+                src={icon5} 
+                alt="Code Icon" 
+                width={45} 
+                height={45} 
+                className="object-contain"
+              />
+            </div>
+            <h3 className="text-xl font-medium text-gray-800 mb-3">Code File</h3>
+            <p className="text-gray-600">
+              The actual implementation (Python, Java, etc.) of the algorithm for reference.
+            </p>
+          </div>
+          
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div className="mb-4 w-16 h-16 flex items-center justify-center rounded-full">
+              <Image 
+                src={icon6} 
+                alt="Visualize Icon" 
+                width={50} 
+                height={50} 
+                className="object-contain"
+              />
+            </div>
+            <h3 className="text-xl font-medium text-gray-800 mb-3">Visualize Algorithms</h3>
+            <p className="text-gray-600">
+              Interactive animations or diagrams showing how an algorithm works step-by-step.
             </p>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
