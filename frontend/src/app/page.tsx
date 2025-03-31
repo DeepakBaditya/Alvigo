@@ -11,6 +11,7 @@ import icon3 from '../../public/img3.png';
 import icon4 from '../../public/img4.png';
 import icon5 from '../../public/img5.png';
 import icon6 from '../../public/img6.png';
+import Footer from '../components/footer';
 
 export default function Home() {
   return (
@@ -175,6 +176,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
