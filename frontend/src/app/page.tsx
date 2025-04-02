@@ -12,6 +12,10 @@ import icon4 from '../../public/img4.png';
 import icon5 from '../../public/img5.png';
 import icon6 from '../../public/img6.png';
 import Footer from '../components/footer';
+import Timeline from '../components/timeline';
+import Team from '../components/team';
+import { Button } from "@/components/ui/button"
+
 
 export default function Home() {
   return (
@@ -176,6 +180,24 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center space-y-6 mb-16">
+          <div className="flex items-center justify-center gap-3">
+            <h1 className="text-5xl font-bold text-primary">Algorithm Visualizer</h1>
+          </div>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Understand complex algorithms through interactive visualizations and step-by-step animations
+          </p>
+          <Button asChild size="lg" className="mt-8">
+            <Link href="/dashboard">
+              Get Started
+            </Link>
+          </Button>
+        </div>  
+        </div>
+      <Timeline />
+      <Team />
       <Footer />
     </div>
   );
