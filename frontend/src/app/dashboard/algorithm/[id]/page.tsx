@@ -147,7 +147,7 @@ const AlgorithmPage = () => {
           {codeContent && (
             <CodeBlock code={codeContent} input={data} algo={algorithm.name} />
           )}
-          <AlgorithmAnimation />
+          <AlgorithmAnimation algoName={algorithm.name} />
         </div>
       </div>
     </main>
