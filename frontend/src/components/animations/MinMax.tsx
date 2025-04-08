@@ -141,17 +141,116 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
       }
     };
 
-    const generateMergeSteps = (steps: ArrayNode[][]) => {};
 
     generateSteps(allSteps[0]);
     setSteps(allSteps);
   }, [array, containerWidth]); // << important: re-run when width updates
 
   useEffect(() => {
-    if (steps.length > 0 && currentStep < steps.length) {
-      setNodes(steps[currentStep]);
+    if (steps.length === 0) return;
+  
+    const lastStep = steps[steps.length - 1];
+    const maxDepth = Math.max(...lastStep.map((node) => node.depth));
+    const deepest = lastStep.filter((n) => n.depth === maxDepth);
+  
+    if (deepest.length <= 1) return;
+  
+    const mergedSteps: ArrayNode[][] = [];
+  
+    const recursivelyMerge = (nodes: ArrayNode[], depth: number): void => {
+      if (nodes.length <= 1) return;
+  
+      const mergedLevel: ArrayNode[] = [];
+  
+      for (let i = 0; i < nodes.length; i += 2) {
+        const left = nodes[i];
+        const right = nodes[i + 1];
+  
+        if (!right) continue;
+  
+        const mergedArray = [...left.array, ...right.array];
+        const min = Math.min(...mergedArray);
+        const max = Math.max(...mergedArray);
+        const midX = (left.coords.x + right.coords.x) / 2;
+        const newY = Math.max(left.coords.y, right.coords.y) + 160;
+  
+        const merged: ArrayNode = {
+          array: mergedArray,
+          depth,
+          id: `${left.id}_${right.id}_merged`,
+          coords: { x: midX, y: newY },
+          parentCoords: null,
+          position: "main",
+          isActive: true,
+          isProcessed: true,
+          leftArray: left.array,
+          rightArray: right.array,
+          min,
+          max,
+        };
+  
+        // // Clone left and right with parentCoords to draw lines
+        // const leftClone: ArrayNode = {
+        //   ...left,
+        //   id: `${left.id}_clone_${merged.id}`,
+        //   parentCoords: merged.coords,
+        // };
+        // const rightClone: ArrayNode = {
+        //   ...right,
+        //   id: `${right.id}_clone_${merged.id}`,
+        //   parentCoords: merged.coords,
+        // };
+  
+        mergedLevel.push(merged);
+      }
+  
+      if (mergedLevel.length) {
+        mergedSteps.push(mergedLevel);
+        recursivelyMerge(
+          mergedLevel.filter((n) => !n.id.includes("clone")),
+          depth + 1
+        );
+      }
+    };
+  
+    recursivelyMerge(deepest, maxDepth + 1);
+  
+    // Add only new steps without duplicating old ones
+    mergedSteps.forEach((step) => {
+      setSteps((prev) => {
+        const last = prev[prev.length - 1] ?? [];
+        const lastIds = new Set(last.map((n) => n.id));
+        const newNodes = step.filter((n) => !lastIds.has(n.id));
+        return newNodes.length ? [...prev, [...last, ...newNodes]] : prev;
+      });
+    });
+  }, [steps]);
+  
+  
+  
+  
+  
+  
+  useEffect(() => {
+    if (steps.length === 0 || currentStep >= steps.length) return;
+  
+    const seen = new Map<string, ArrayNode>();
+  
+    for (let i = 0; i <= currentStep && i < steps.length; i++) {
+      const step = steps[i];
+      if (!Array.isArray(step)) continue; // <- Fix for undefined/non-array
+      for (const node of step) {
+        if (!seen.has(node.id)) {
+          seen.set(node.id, node);
+        }
+      }
     }
+  
+    setNodes(Array.from(seen.values()));
   }, [currentStep, steps]);
+  
+  
+  
 
   return (
     <div ref={containerRef} className="w-full h-full relative overflow-hidden">
@@ -203,9 +302,9 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               x1={node.parentCoords.x + NODE_WIDTH / 2}
-              y1={node.parentCoords.y + NODE_HEIGHT}
+              y1={node.id.includes("_merged")?node.parentCoords.y: node.parentCoords.y + NODE_HEIGHT}
               x2={node.coords.x + NODE_WIDTH / 2}
-              y2={node.coords.y}
+              y2={node.id.includes("_merged")?node.coords.y + NODE_HEIGHT:node.coords.y}
               stroke={node.position === "left" ? "#3b82f6" : "#10b981"}
               strokeWidth="2"
             />

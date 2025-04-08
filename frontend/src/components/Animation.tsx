@@ -47,16 +47,27 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
         setMaxSteps(0);
         return;
       }
-
-      // Calculate steps for Min-Max algorithm:
-      // 1. Divide steps: log2(n) levels
-      // 2. Base case steps: n (for each leaf node)
-      // 3. Combine steps: n-1 (each comparison reduces problem size by 1)
+  
       const n = array.length;
-      const divideSteps = Math.ceil(Math.log2(n));
-      const baseSteps = n;
-      const combineSteps = n - 1;
-      setMaxSteps(divideSteps + baseSteps + combineSteps);
+      
+      // Calculate steps based on actual animation phases:
+      // 1. Division steps: Each split operation (log2(n) levels)
+      // 2. Base case steps: All leaves processed in 1 step
+      // 3. Merge steps: Each comparison operation (n-1 steps)
+      
+      // For visualization purposes, we need:
+      // - 1 step per division level (showing all splits at that level)
+      // - 1 step for all base cases
+      // - 1 step per merge operation
+      
+      const divisionSteps = Math.ceil(Math.log2(n));
+      const baseSteps = 1;
+      const mergeSteps = n - 1;
+      
+      // Special case for n=1 (no divisions or merges needed)
+      const totalSteps = n === 1 ? 1 : divisionSteps + baseSteps + mergeSteps;
+      
+      setMaxSteps(totalSteps);
     } else if (algoName === "Longest Common Subsequence") {
       if (
         typeof data === "object" &&
