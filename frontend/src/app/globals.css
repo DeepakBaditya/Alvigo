@@ -58,6 +58,7 @@
   }
 }
 
+
 @layer base {
   * {
     @apply border-border;
@@ -68,3 +69,20 @@
 }
 
 
+
+
+
+/* Add to your global.css or CSS module */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.ring-2 {
+  box-shadow: 0 0 0 2px var(--primary-color); /* Adjust based on your theme */
+}
