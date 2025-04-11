@@ -34,10 +34,19 @@ const DashboardPage = () => {
   const [algorithms, setAlgorithms] = useState<categoryAlgorithm[]>([]);
   const router = useRouter();
 
+  const setAllAlgothim = (categoriesArray: CategoryWithId[]) => {
+    setSelectedCategory("All Algorithms");
+    const allAlgorithms = categoriesArray.flatMap(
+      (category) => category.algorithms
+    );
+    setAlgorithms(allAlgorithms);
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       const fetchedCategories = await getAllCategories();
       setCategories(fetchedCategories);
+      setAllAlgothim(fetchedCategories);
     };
 
     fetchCategories();
@@ -56,7 +65,7 @@ const DashboardPage = () => {
             <Button
               variant={selectedCategory === null ? "secondary" : "ghost"}
               className="w-full justify-start"
-              onClick={() => setSelectedCategory(null)}
+              onClick={() => setAllAlgothim(categories)}
             >
               <LayoutDashboard className="mr-2 h-4 w-4" />
               All Algorithms

@@ -14,6 +14,7 @@ import Complexity from "@/components/Complexity";
 import { getFileContent } from "@/lib/getFileContent";
 import { useDataStore } from "@/store/useDataStore";
 import PrimsInput from "@/components/inputs/PrimsInput";
+import AlgorithmAnimation from "@/components/Animation";
 
 const InputComponents: Record<string, React.FC<{}>> = {
   "Min And Max": () => <MinMaxInput />,
@@ -146,6 +147,7 @@ const AlgorithmPage = () => {
           {codeContent && (
             <CodeBlock code={codeContent} input={data} algo={algorithm.name} />
           )}
+          <AlgorithmAnimation algoName={algorithm.name} />
         </div>
       </div>
     </main>
