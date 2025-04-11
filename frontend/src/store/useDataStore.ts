@@ -1,12 +1,11 @@
 // src/store/useDataStore.ts
+import { DataType } from "@/types/algorithm-context";
 import { create } from "zustand";
 
 type GraphData = {
   nodes: { id: string; label: string }[];
   edges: { from: string; to: string }[];
 };
-
-type DataType = string | number[] | GraphData | null; // Can be a string, array, graph, or null
 
 type Store = {
   data: DataType;
