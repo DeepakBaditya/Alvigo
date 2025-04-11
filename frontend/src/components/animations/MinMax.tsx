@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useDataStore } from "@/store/useDataStore";
 
@@ -23,6 +23,7 @@ interface ArrayNode {
   rightArray?: number[];
   isActive: boolean;
   isProcessed: boolean;
+  message: string;
 }
 
 interface MinMaxAnimationProps {
@@ -60,7 +61,6 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
 
     const rootX = containerWidth / 2;
     const rootY = 60;
-
     const allSteps: ArrayNode[][] = [];
 
     const initialNode: ArrayNode = {
@@ -72,6 +72,7 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
       id: "root",
       isActive: true,
       isProcessed: false,
+      message: `Start splitting array: [${array.join(", ")}]`,
     };
 
     allSteps.push([initialNode]);
@@ -89,11 +90,13 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
           node.min = node.array[0];
           node.max = node.array[0];
           node.isProcessed = true;
+          node.message = `Single element found: Min & Max = ${node.array[0]}`;
         } else if (node.array.length === 2) {
           const [a, b] = node.array;
           node.min = Math.min(a, b);
           node.max = Math.max(a, b);
           node.isProcessed = true;
+          node.message = `Comparing two elements: Min = ${node.min}, Max = ${node.max}`;
         } else {
           const mid = Math.floor(node.array.length / 2);
           node.mid = mid;
@@ -115,6 +118,7 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
             id: `${node.id}-left`,
             isActive: true,
             isProcessed: false,
+            message: `Splitting left: [${node.leftArray.join(", ")}]`,
           };
 
           const rightNode: ArrayNode = {
@@ -129,6 +133,7 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
             id: `${node.id}-right`,
             isActive: true,
             isProcessed: false,
+            message: `Splitting right: [${node.rightArray.join(", ")}]`,
           };
 
           node.isProcessed = true;
@@ -141,39 +146,38 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
       }
     };
 
-
     generateSteps(allSteps[0]);
     setSteps(allSteps);
-  }, [array, containerWidth]); // << important: re-run when width updates
+  }, [array, containerWidth]);
 
   useEffect(() => {
     if (steps.length === 0) return;
-  
+
     const lastStep = steps[steps.length - 1];
     const maxDepth = Math.max(...lastStep.map((node) => node.depth));
     const deepest = lastStep.filter((n) => n.depth === maxDepth);
-  
+
     if (deepest.length <= 1) return;
-  
+
     const mergedSteps: ArrayNode[][] = [];
-  
+
     const recursivelyMerge = (nodes: ArrayNode[], depth: number): void => {
       if (nodes.length <= 1) return;
-  
+
       const mergedLevel: ArrayNode[] = [];
-  
+
       for (let i = 0; i < nodes.length; i += 2) {
         const left = nodes[i];
         const right = nodes[i + 1];
-  
+
         if (!right) continue;
-  
+
         const mergedArray = [...left.array, ...right.array];
         const min = Math.min(...mergedArray);
         const max = Math.max(...mergedArray);
         const midX = (left.coords.x + right.coords.x) / 2;
         const newY = Math.max(left.coords.y, right.coords.y) + 160;
-  
+
         const merged: ArrayNode = {
           array: mergedArray,
           depth,
@@ -187,35 +191,41 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
           rightArray: right.array,
           min,
           max,
+          message: `Merging [${left.array.join(", ")}] and [${right.array.join(
+            ", "
+          )}]: Min = ${min}, Max = ${max}`,
         };
-  
-        // // Clone left and right with parentCoords to draw lines
-        // const leftClone: ArrayNode = {
-        //   ...left,
-        //   id: `${left.id}_clone_${merged.id}`,
-        //   parentCoords: merged.coords,
-        // };
-        // const rightClone: ArrayNode = {
-        //   ...right,
-        //   id: `${right.id}_clone_${merged.id}`,
-        //   parentCoords: merged.coords,
-        // };
-  
-        mergedLevel.push(merged);
+
+        // Clones to help draw lines
+        const leftClone: ArrayNode = {
+          ...left,
+          id: `${left.id}_clone_${merged.id}`,
+          parentCoords: merged.coords,
+          isActive: false,
+        };
+
+        const rightClone: ArrayNode = {
+          ...right,
+          id: `${right.id}_clone_${merged.id}`,
+          parentCoords: merged.coords,
+          isActive: false,
+        };
+
+        mergedLevel.push(leftClone, rightClone, merged);
       }
-  
-      if (mergedLevel.length) {
-        mergedSteps.push(mergedLevel);
-        recursivelyMerge(
-          mergedLevel.filter((n) => !n.id.includes("clone")),
-          depth + 1
-        );
+
+      const nonCloneMerged = mergedLevel.filter((n) => !n.id.includes("clone"));
+      if (nonCloneMerged.length > 0) {
+        mergedSteps.push([
+          ...nonCloneMerged,
+          ...mergedLevel.filter((n) => n.id.includes("clone")),
+        ]);
+        recursivelyMerge(nonCloneMerged, depth + 1);
       }
     };
-  
+
     recursivelyMerge(deepest, maxDepth + 1);
-  
-    // Add only new steps without duplicating old ones
+
     mergedSteps.forEach((step) => {
       setSteps((prev) => {
         const last = prev[prev.length - 1] ?? [];
@@ -225,35 +235,40 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
       });
     });
   }, [steps]);
-  
-  
-  
-  
-  
-  
+
   useEffect(() => {
     if (steps.length === 0 || currentStep >= steps.length) return;
-  
+
     const seen = new Map<string, ArrayNode>();
-  
+
     for (let i = 0; i <= currentStep && i < steps.length; i++) {
       const step = steps[i];
-      if (!Array.isArray(step)) continue; // <- Fix for undefined/non-array
+      if (!Array.isArray(step)) continue;
       for (const node of step) {
         if (!seen.has(node.id)) {
           seen.set(node.id, node);
         }
       }
     }
-  
+
     setNodes(Array.from(seen.values()));
   }, [currentStep, steps]);
-  
-  
-  
+
+  const currentMessage = (() => {
+    const step = steps[currentStep];
+    if (!step || step.length === 0) return "";
+
+    // Prioritize messages from active or processed nodes (most recent)
+    const meaningfulNode = [...step]
+      .reverse()
+      .find((node) => node.message && (node.isActive || node.isProcessed));
+
+    return meaningfulNode?.message ?? "";
+  })();
 
   return (
-    <div ref={containerRef} className="w-full h-full relative overflow-hidden">
+    <div ref={containerRef} className="w-full h-full relative">
+      <div className="absolute">Steps: {currentMessage}</div>
       {nodes.map((node) => (
         <motion.div
           key={node.id}
@@ -294,7 +309,7 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
         </motion.div>
       ))}
 
-      <svg className="absolute flex justify-center top-0 left-0 w-full h-full pointer-events-none">
+      <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {nodes.map((node) =>
           node.parentCoords ? (
             <motion.line
@@ -302,10 +317,24 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               x1={node.parentCoords.x + NODE_WIDTH / 2}
-              y1={node.id.includes("_merged")?node.parentCoords.y: node.parentCoords.y + NODE_HEIGHT}
+              y1={
+                node.id.includes("_merged")
+                  ? node.parentCoords.y
+                  : node.parentCoords.y + NODE_HEIGHT
+              }
               x2={node.coords.x + NODE_WIDTH / 2}
-              y2={node.id.includes("_merged")?node.coords.y + NODE_HEIGHT:node.coords.y}
-              stroke={node.position === "left" ? "#3b82f6" : "#10b981"}
+              y2={
+                node.id.includes("_merged")
+                  ? node.coords.y + NODE_HEIGHT
+                  : node.coords.y
+              }
+              stroke={
+                node.id.includes("clone")
+                  ? "#f59e0b" // orange for merge
+                  : node.position === "left"
+                  ? "#3b82f6" // blue for left
+                  : "#10b981" // green for right
+              }
               strokeWidth="2"
             />
           ) : null

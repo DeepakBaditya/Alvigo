@@ -47,26 +47,26 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
         setMaxSteps(0);
         return;
       }
-  
+
       const n = array.length;
-      
+
       // Calculate steps based on actual animation phases:
       // 1. Division steps: Each split operation (log2(n) levels)
       // 2. Base case steps: All leaves processed in 1 step
       // 3. Merge steps: Each comparison operation (n-1 steps)
-      
+
       // For visualization purposes, we need:
       // - 1 step per division level (showing all splits at that level)
       // - 1 step for all base cases
       // - 1 step per merge operation
-      
+
       const divisionSteps = Math.ceil(Math.log2(n));
       const baseSteps = 1;
       const mergeSteps = n - 1;
-      
+
       // Special case for n=1 (no divisions or merges needed)
       const totalSteps = n === 1 ? 1 : divisionSteps + baseSteps + mergeSteps;
-      
+
       setMaxSteps(totalSteps);
     } else if (algoName === "Longest Common Subsequence") {
       if (
@@ -149,13 +149,13 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Animation</h2>
         <Button variant="outline" size="sm" onClick={handlePreview}>
-          <Expand className="h-4 w-4 mr-2" />
+          <Expand className="h-4 w-4 mr-2 " />
           {isFullscreen ? "Exit Preview" : "Preview"}
         </Button>
       </div>
 
       {/* Animation Display */}
-      <div className="relative bg-gray-50 overflow-hidden grow rounded-md">
+      <div className="relative bg-gray-50 overflow-scroll grow rounded-md">
         {AnimationComponent && <AnimationComponent currentStep={currentStep} />}
       </div>
 
