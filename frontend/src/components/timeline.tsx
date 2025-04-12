@@ -57,7 +57,7 @@ const Timeline = () => {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto relative py-16" ref={timelineRef}>
+    <div id="visu" className="max-w-3xl mx-auto relative py-16" ref={timelineRef}>
       {/* Timeline line with fill effect */}
       <div className="absolute left-8 top-0 h-full w-1 bg-gray-300">
         <div 

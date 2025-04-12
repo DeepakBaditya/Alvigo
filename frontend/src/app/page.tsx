@@ -38,8 +38,8 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <Link href="/" className="text-gray-700 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Home</Link>
               <Link href="/dashboard" className="text-gray-700 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Algos</Link>
-              <Link href="#" className="text-gray-700 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Visualizations</Link>
-              <Link href="#" className="text-gray-700 hover:text-black px-3 py-2 rounded-md text-sm font-medium">About</Link>
+              <Link href="#visu" className="text-gray-700 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Visualizations</Link>
+              <Link href="#about" scroll={true} className="text-gray-700 hover:text-black px-3 py-2 rounded-md text-sm font-medium">About</Link>
             </div>
           </div>
         </div>

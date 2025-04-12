@@ -106,15 +106,15 @@ const DashboardPage = () => {
                 }
               >
                 <h3 className="text-xl font-semibold mb-2">{algorithm.name}</h3>
-                <p className="text-muted-foreground mb-4">{algorithm.id}</p>
+                {/* <p className="text-muted-foreground mb-4">{algorithm.id}</p> */}
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>O(n)</span>
+                    {/* <span>O(n)</span> */}
                   </div>
                   <div className="flex items-center gap-1">
                     <Database className="w-4 h-4" />
-                    <span>O(n)</span>
+                    {/* <span>O(n)</span> */}
                   </div>
                 </div>
               </Card>

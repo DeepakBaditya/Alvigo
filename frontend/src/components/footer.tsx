@@ -8,7 +8,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-black text-white">
+    <footer  id='footer' className="bg-black text-white">
       <div className="max-w-9l mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Footer content */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
@@ -36,9 +36,9 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-gray-600 hover:text-white transition">About</Link></li>
-              <li><Link href="#" className="text-gray-600 hover:text-white transition">Blog</Link></li>
-              <li><Link href="#" className="text-gray-600 hover:text-white transition">Contact Us</Link></li>
+              <li><Link href="#about" scroll={true} className="text-gray-600 hover:text-white transition">About</Link></li>
+              <li><Link href="#footer" className="text-gray-600 hover:text-white transition">Blog</Link></li>
+              <li><Link href="#footer" className="text-gray-600 hover:text-white transition">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -46,9 +46,9 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Resources</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-gray-600 hover:text-white transition">Documentation</Link></li>
-              <li><Link href="#" className="text-gray-600 hover:text-white transition">Tutorials</Link></li>
-              <li><Link href="#" className="text-gray-600 hover:text-white transition">Community</Link></li>
+              <li><Link href="#footer" className="text-gray-600 hover:text-white transition">Documentation</Link></li>
+              <li><Link href="#visu" scroll={true} className="text-gray-600 hover:text-white transition">Tutorials</Link></li>
+              <li><Link href="#footer" className="text-gray-600 hover:text-white transition">Community</Link></li>
             </ul>
           </div>
 
@@ -56,9 +56,9 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Follow Me</h3>
             <ul className="space-y-2">
-              <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-white transition">Twitter</a></li>
-              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-white transition">GitHub</a></li>
-              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-white transition">LinkedIn</a></li>
+              <li><a href="#footer" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-white transition">Twitter</a></li>
+              <li><a href="https://github.com/DeepakBaditya/Alvigo" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-white transition">GitHub</a></li>
+              <li><a href="https://www.linkedin.com/in/deepak-baditya-8a261b2bb" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-white transition">LinkedIn</a></li>
             </ul>
           </div>
         </div>
