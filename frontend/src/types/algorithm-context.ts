@@ -19,6 +19,7 @@ export type properties = {
   timeComplexity: string;
   spaceComplexity: string;
 };
+
 export type algorithm = {
   id: string;
   name: string;

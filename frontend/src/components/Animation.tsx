@@ -14,7 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import MinMaxAnimation from "./animations/MinMax";
 import LongestCommonSubsequence from "./animations/LongestCommonSubsequence";
+import Prims from "./animations/Prims";
 import { useDataStore } from "@/store/useDataStore";
+import type { Edge } from "@/types/algorithm-context"; // Make sure this path is correct
 
 interface AlgorithmAnimationPlayerProps {
   algoName: string;
@@ -35,38 +37,23 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
   const InputComponents: Record<string, React.FC<{ currentStep: number }>> = {
     "Min And Max": MinMaxAnimation,
     "Longest Common Subsequence": LongestCommonSubsequence,
+    Prims: Prims,
   };
 
   useEffect(() => {
     setCurrentStep(0);
     setIsPlaying(false);
-    console.log("data:", data);
     if (algoName === "Min And Max") {
-      const array = Array.isArray(data) ? data : [];
+      const array = Array.isArray(data) ? (data as number[]) : [];
       if (array.length === 0) {
         setMaxSteps(0);
         return;
       }
-
       const n = array.length;
-
-      // Calculate steps based on actual animation phases:
-      // 1. Division steps: Each split operation (log2(n) levels)
-      // 2. Base case steps: All leaves processed in 1 step
-      // 3. Merge steps: Each comparison operation (n-1 steps)
-
-      // For visualization purposes, we need:
-      // - 1 step per division level (showing all splits at that level)
-      // - 1 step for all base cases
-      // - 1 step per merge operation
-
       const divisionSteps = Math.ceil(Math.log2(n));
       const baseSteps = 1;
       const mergeSteps = n - 1;
-
-      // Special case for n=1 (no divisions or merges needed)
       const totalSteps = n === 1 ? 1 : divisionSteps + baseSteps + mergeSteps;
-
       setMaxSteps(totalSteps);
     } else if (algoName === "Longest Common Subsequence") {
       if (
@@ -75,17 +62,19 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
         "string1" in data &&
         "string2" in data
       ) {
-        const m = data.string1.length;
-        const n = data.string2.length;
-
-        // Fill table steps = m * n
-        // Backtracking steps = up to min(m, n) in worst case (conservative estimate)
+        const m = (data as { string1: string }).string1.length;
+        const n = (data as { string2: string }).string2.length;
         const fillSteps = m * n;
-
-        // Backtracking steps (at most m + n)
         const backtrackSteps = m + n;
-
         setMaxSteps(fillSteps + backtrackSteps - 2);
+      }
+    } else if (algoName === "Prims") {
+      if (Array.isArray(data)) {
+        const edges = data as Edge[];
+        const numberOfSteps = edges.length;
+        setMaxSteps(numberOfSteps);
+      } else {
+        setMaxSteps(0);
       }
     }
   }, [algoName, data]);
@@ -170,7 +159,7 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
             step={1}
             onValueChange={([val]) => {
               setCurrentStep(val);
-              setIsPlaying(false); // pause on seek
+              setIsPlaying(false);
             }}
             className="w-full"
           />
@@ -186,7 +175,6 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
             >
               <SkipBack className="h-4 w-4" />
             </Button>
-
             <Button variant="outline" size="icon" onClick={handlePlay}>
               {isPlaying ? (
                 <Pause className="h-4 w-4" />
@@ -194,7 +182,6 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
                 <Play className="h-4 w-4" />
               )}
             </Button>
-
             <Button
               variant="outline"
               size="icon"
@@ -203,12 +190,10 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
             >
               <SkipForward className="h-4 w-4" />
             </Button>
-
             <Button variant="outline" size="icon" onClick={handleReset}>
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
-
           <div className="text-sm text-gray-500">
             Step {currentStep}/{maxSteps}
           </div>
