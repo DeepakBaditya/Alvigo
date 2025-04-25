@@ -5,7 +5,12 @@ import { useRouter, useParams } from "next/navigation";
 import { ComplexityGraph } from "@/components/ComplexityGraph";
 import { CodeBlock } from "@/components/CodeBlock";
 import { Brain, Component } from "lucide-react";
-import { algorithm, Edge, mapInput } from "@/types/algorithm-context";
+import {
+  algorithm,
+  Edge,
+  lineraSearchInput,
+  mapInput,
+} from "@/types/algorithm-context";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import LongestCommonSubsequenceInput from "@/components/inputs/LongestCommonSubsequenceInput";
@@ -15,11 +20,17 @@ import { getFileContent } from "@/lib/getFileContent";
 import { useDataStore } from "@/store/useDataStore";
 import PrimsInput from "@/components/inputs/PrimsInput";
 import AlgorithmAnimation from "@/components/Animation";
+import LinearSearchInput from "@/components/inputs/LinearSearch";
 
 const InputComponents: Record<string, React.FC<{}>> = {
   "Min And Max": () => <MinMaxInput />,
   "Longest Common Subsequence": () => <LongestCommonSubsequenceInput />,
   Prims: () => <PrimsInput onGraphChange={() => {}} />,
+  "Quick Sort": () => <MinMaxInput />,
+  "Bubble Sort": () => <MinMaxInput />,
+  "Linear Search": () => <LinearSearchInput algoName="Linear Search" />,
+  "Binary Search": () => <LinearSearchInput algoName="Binary Search" />,
+  "Jump Search": () => <LinearSearchInput algoName="Jump Search" />,
 };
 
 const getAlgorithmById = async (id: string): Promise<algorithm | null> => {
@@ -42,6 +53,7 @@ const AlgorithmPage = () => {
   const [loading, setLoading] = useState(true);
   const data = useDataStore((state) => state.data);
   const setData = useDataStore((state) => state.setData);
+  const meta = useDataStore((state) => state.meta);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,8 +62,22 @@ const AlgorithmPage = () => {
         if (!id || typeof id !== "string") return;
         const algorithmData = await getAlgorithmById(id);
         if (algorithmData) {
-          if (algorithmData.name == "Min And Max") {
+          if (
+            algorithmData.name == "Min And Max" ||
+            algorithmData.name == "Quick Sort" ||
+            algorithmData.name == "Bubble Sort"
+          ) {
             setData([3, 5, 1, 9, 2, 8, 7, 6]);
+          } else if (
+            algorithmData.name == "Linear Search" ||
+            algorithmData.name == "Binary Search" ||
+            algorithmData.name == "Jump Search"
+          ) {
+            const linearSearchInput: lineraSearchInput = {
+              array: [3, 5, 1, 9, 2, 8, 7, 6],
+              target: 5,
+            };
+            setData(linearSearchInput);
           } else if (algorithmData.name == "Longest Common Subsequence") {
             const dataInput: mapInput = {
               string1: "AGGTAB",
@@ -70,6 +96,7 @@ const AlgorithmPage = () => {
             ];
             setData(primsInput);
           }
+          console.log(algorithm?.codePath);
           const code = await getFileContent(algorithmData.codePath);
           setCodeContent(code);
           setAlgorithm(algorithmData);
@@ -122,25 +149,29 @@ const AlgorithmPage = () => {
           })()}
         </div>
 
-        {/* Complexity Information */}
-        <Complexity
-          timeComplexity={algorithm.properties.timeComplexity}
-          spaceComplexity={algorithm.properties.spaceComplexity}
-        />
+        {/* Complexity Info */}
+        {meta && (
+          <Complexity
+            timeComplexity={meta.properties.timeComplexity}
+            spaceComplexity={meta.properties.spaceComplexity}
+          />
+        )}
 
         {/* Graphs */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <ComplexityGraph
-            title="Time Complexity"
-            complexity={algorithm.properties.timeComplexity}
-            className="bg-card"
-          />
-          <ComplexityGraph
-            title="Space Complexity"
-            complexity={algorithm.properties.spaceComplexity}
-            className="bg-card"
-          />
-        </div>
+        {meta && (
+          <div className="grid md:grid-cols-2 gap-8">
+            <ComplexityGraph
+              title="Time Complexity"
+              complexity={meta.properties.timeComplexity}
+              className="bg-card"
+            />
+            <ComplexityGraph
+              title="Space Complexity"
+              complexity={meta.properties.spaceComplexity}
+              className="bg-card"
+            />
+          </div>
+        )}
 
         {/* Code Block */}
         <div className="grid md:grid-cols-2 gap-8">

@@ -226,13 +226,15 @@ export default function MinMaxAnimation({ currentStep }: MinMaxAnimationProps) {
 
     recursivelyMerge(deepest, maxDepth + 1);
 
+    let seenNodeIds = new Set<string>();
+    steps.forEach((step) => step.forEach((node) => seenNodeIds.add(node.id)));
+
     mergedSteps.forEach((step) => {
-      setSteps((prev) => {
-        const last = prev[prev.length - 1] ?? [];
-        const lastIds = new Set(last.map((n) => n.id));
-        const newNodes = step.filter((n) => !lastIds.has(n.id));
-        return newNodes.length ? [...prev, [...last, ...newNodes]] : prev;
-      });
+      const newNodes = step.filter((n) => !seenNodeIds.has(n.id));
+      if (newNodes.length > 0) {
+        newNodes.forEach((n) => seenNodeIds.add(n.id));
+        setSteps((prev) => [...prev, [...prev[prev.length - 1], ...newNodes]]);
+      }
     });
   }, [steps]);
 

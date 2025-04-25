@@ -44,6 +44,136 @@ export function CodeBlock({ code, input, algo }: CodeBlockProps) {
         }
         return updatedContent;
 
+      case "Quick Sort":
+        const array1 = input?.toString().split(",").map(Number);
+        if (language === "python") {
+          // Replace specific text (e.g., replace "old text" with "new text")
+          updatedContent = code.replace(
+            /arr\s*=\s*\[.*?\]/,
+            `arr = ${JSON.stringify(array1)}`
+          );
+        } else if (language === "java") {
+          const newArrayString = `int[] arr = {${array1?.join(", ")}};`;
+          updatedContent = code.replace(
+            /int\[\]\s*arr\s*=\s*\{.*?\};/,
+            newArrayString
+          );
+        } else if (language === "c") {
+          const newArrayString = `int arr[] = {${array1}};`;
+          updatedContent = code.replace(
+            /int\s+arr\[\]\s*=\s*\{.*?\};/,
+            newArrayString
+          );
+        }
+        return updatedContent;
+
+      case "Bubble Sort":
+        const array2 = input?.toString().split(",").map(Number);
+        if (language === "python") {
+          // Replace specific text (e.g., replace "old text" with "new text")
+          updatedContent = code.replace(
+            /arr\s*=\s*\[.*?\]/,
+            `arr = ${JSON.stringify(array2)}`
+          );
+        } else if (language === "java") {
+          const newArrayString = `int[] arr = {${array2?.join(", ")}};`;
+          updatedContent = code.replace(
+            /int\[\]\s*arr\s*=\s*\{.*?\};/,
+            newArrayString
+          );
+        } else if (language === "c") {
+          const newArrayString = `int arr[] = {${array2}};`;
+          updatedContent = code.replace(
+            /int\s+arr\[\]\s*=\s*\{.*?\};/,
+            newArrayString
+          );
+        }
+        return updatedContent;
+
+      case "Linear Search":
+        if (
+          typeof input === "object" &&
+          input !== null &&
+          "array" in input &&
+          "target" in input
+        ) {
+          const target = input.target;
+          const array3 = input?.array.toString().split(",").map(Number);
+          if (language === "python") {
+            // Replace specific text (e.g., replace "old text" with "new text")
+            updatedContent = code
+              .replace(/arr\s*=\s*\[.*?\]/, `arr = ${JSON.stringify(array3)}`)
+              .replace(/target\s*=\s*\d+/, `target = ${target}`);
+          } else if (language === "java") {
+            const newArrayString = `int[] arr = {${array3?.join(", ")}};`;
+            updatedContent = code
+              .replace(/int\[\]\s*arr\s*=\s*\{.*?\};/, newArrayString)
+              .replace(/int\s*target\s*=\s*\d+/, `target = ${target}`);
+          } else if (language === "c") {
+            const newArrayString = `int arr[] = {${array3}};`;
+            updatedContent = code
+              .replace(/int\s+arr\[\]\s*=\s*\{.*?\};/, newArrayString)
+              .replace(/int\s*target\s*=\s*\d+/, `target = ${target}`);
+          }
+        }
+        return updatedContent;
+
+      case "Binary Search":
+        if (
+          typeof input === "object" &&
+          input !== null &&
+          "array" in input &&
+          "target" in input
+        ) {
+          const target = input.target;
+          const array3 = input?.array.toString().split(",").map(Number);
+          if (language === "python") {
+            // Replace specific text (e.g., replace "old text" with "new text")
+            updatedContent = code
+              .replace(/arr\s*=\s*\[.*?\]/, `arr = ${JSON.stringify(array3)}`)
+              .replace(/target\s*=\s*\d+/, `target = ${target}`);
+          } else if (language === "java") {
+            const newArrayString = `int[] arr = {${array3?.join(", ")}};`;
+            updatedContent = code
+              .replace(/int\[\]\s*arr\s*=\s*\{.*?\};/, newArrayString)
+              .replace(/int\s*target\s*=\s*\d+/, `target = ${target}`);
+          } else if (language === "c") {
+            const newArrayString = `int arr[] = {${array3}};`;
+            updatedContent = code
+              .replace(/int\s+arr\[\]\s*=\s*\{.*?\};/, newArrayString)
+              .replace(/int\s*target\s*=\s*\d+/, `target = ${target}`);
+          }
+        }
+        return updatedContent;
+
+      case "Jump Search":
+        if (
+          typeof input === "object" &&
+          input !== null &&
+          "array" in input &&
+          "target" in input
+        ) {
+          const target = input.target;
+          const array3 = input?.array.toString().split(",").map(Number);
+          if (language === "python") {
+            // Replace specific text (e.g., replace "old text" with "new text")
+            updatedContent = code
+              .replace(/arr\s*=\s*\[.*?\]/, `arr = ${JSON.stringify(array3)}`)
+              .replace(/target\s*=\s*\d+/, `target = ${target}`);
+          } else if (language === "java") {
+            const newArrayString = `int[] arr = {${array3?.join(", ")}};`;
+            updatedContent = code
+              .replace(/int\[\]\s*arr\s*=\s*\{.*?\};/, newArrayString)
+              .replace(/int\s*target\s*=\s*\d+/, `target = ${target}`);
+          } else if (language === "c") {
+            const newArrayString = `int arr[] = {${array3}};`;
+            updatedContent = code
+              .replace(/int\s+arr\[\]\s*=\s*\{.*?\};/, newArrayString)
+              .replace(/int\s*target\s*=\s*\d+/, `target = ${target}`);
+          }
+        }
+        return updatedContent;
+
       case "Longest Common Subsequence":
         if (
           typeof input === "object" &&
