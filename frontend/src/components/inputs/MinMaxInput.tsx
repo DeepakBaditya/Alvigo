@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useDataStore } from "@/store/useDataStore";
 
-const ArrayInput = ({}) => {
-  const [input, setInput] = useState(""); // To hold input field value
+const ArrayInput = () => {
+  const [input, setInput] = useState("3, 5, 1, 9, 2, 8, 7, 6"); // To hold input field value
   const setData = useDataStore((state) => state.setData);
 
   const handleStoreArray = () => {

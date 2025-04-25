@@ -4,18 +4,33 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ComplexityGraph } from "@/components/ComplexityGraph";
 import { CodeBlock } from "@/components/CodeBlock";
-import { Brain } from "lucide-react";
-import { algorithm } from "@/types/algorithm-context";
+import { Brain, Component } from "lucide-react";
+import {
+  algorithm,
+  Edge,
+  lineraSearchInput,
+  mapInput,
+} from "@/types/algorithm-context";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import StringInput from "@/components/StringInput";
-import ArrayInput from "@/components/ArrayInput";
+import LongestCommonSubsequenceInput from "@/components/inputs/LongestCommonSubsequenceInput";
+import MinMaxInput from "@/components/inputs/MinMaxInput";
 import Complexity from "@/components/Complexity";
 import { getFileContent } from "@/lib/getFileContent";
+import { useDataStore } from "@/store/useDataStore";
+import PrimsInput from "@/components/inputs/PrimsInput";
+import AlgorithmAnimation from "@/components/Animation";
+import LinearSearchInput from "@/components/inputs/LinearSearch";
 
-const InputComponents: Record<string, React.FC<{ name: string }>> = {
-  array: ({ name }) => <ArrayInput />,
-  string: ({ name }) => <StringInput />,
+const InputComponents: Record<string, React.FC<{}>> = {
+  "Min And Max": () => <MinMaxInput />,
+  "Longest Common Subsequence": () => <LongestCommonSubsequenceInput />,
+  Prims: () => <PrimsInput onGraphChange={() => {}} />,
+  "Quick Sort": () => <MinMaxInput />,
+  "Bubble Sort": () => <MinMaxInput />,
+  "Linear Search": () => <LinearSearchInput algoName="Linear Search" />,
+  "Binary Search": () => <LinearSearchInput algoName="Binary Search" />,
+  "Jump Search": () => <LinearSearchInput algoName="Jump Search" />,
 };
 
 const getAlgorithmById = async (id: string): Promise<algorithm | null> => {
@@ -36,8 +51,9 @@ const AlgorithmPage = () => {
   const [algorithm, setAlgorithm] = useState<algorithm | null>(null);
   const [codeContent, setCodeContent] = useState<null>(null);
   const [loading, setLoading] = useState(true);
-  const [inputs, setInputs] = useState({});
-  const router = useRouter();
+  const data = useDataStore((state) => state.data);
+  const setData = useDataStore((state) => state.setData);
+  const meta = useDataStore((state) => state.meta);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,8 +61,42 @@ const AlgorithmPage = () => {
       try {
         if (!id || typeof id !== "string") return;
         const algorithmData = await getAlgorithmById(id);
-        setInputs(algorithmData?.input || {});
         if (algorithmData) {
+          if (
+            algorithmData.name == "Min And Max" ||
+            algorithmData.name == "Quick Sort" ||
+            algorithmData.name == "Bubble Sort"
+          ) {
+            setData([3, 5, 1, 9, 2, 8, 7, 6]);
+          } else if (
+            algorithmData.name == "Linear Search" ||
+            algorithmData.name == "Binary Search" ||
+            algorithmData.name == "Jump Search"
+          ) {
+            const linearSearchInput: lineraSearchInput = {
+              array: [3, 5, 1, 9, 2, 8, 7, 6],
+              target: 5,
+            };
+            setData(linearSearchInput);
+          } else if (algorithmData.name == "Longest Common Subsequence") {
+            const dataInput: mapInput = {
+              string1: "AGGTAB",
+              string2: "GXTXAYB",
+            };
+            setData(dataInput);
+          } else if (algorithmData.name == "Prims") {
+            const primsInput: Edge[] = [
+              { from: 0, to: 1, weight: 2 },
+              { from: 0, to: 3, weight: 6 },
+              { from: 1, to: 2, weight: 3 },
+              { from: 1, to: 3, weight: 8 },
+              { from: 1, to: 4, weight: 5 },
+              { from: 2, to: 4, weight: 7 },
+              { from: 3, to: 4, weight: 9 },
+            ];
+            setData(primsInput);
+          }
+          console.log(algorithm?.codePath);
           const code = await getFileContent(algorithmData.codePath);
           setCodeContent(code);
           setAlgorithm(algorithmData);
@@ -69,7 +119,6 @@ const AlgorithmPage = () => {
   if (!algorithm) {
     return <div className="text-center text-red-500">Algorithm not found</div>;
   }
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-secondary p-8">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -90,55 +139,46 @@ const AlgorithmPage = () => {
         <div>
           {(() => {
             const elements = [];
-
-            for (const [type, count] of Object.entries(inputs ?? {}) as [
-              string,
-              number
-            ][]) {
-              if (!InputComponents[type]) {
-                console.error(`Missing input component for type: ${type}`);
-                continue; // Skip if component is missing
-              }
-
-              for (let index = 0; index < count; index++) {
-                const name = `${type}_${index}`;
-                const Component = InputComponents[type]; // Get the correct component
-
-                elements.push(
-                  <div key={name}>
-                    <Component name={name} />
-                  </div>
-                );
-              }
-            }
-
+            const Component = InputComponents[algorithm.name];
+            elements.push(
+              <div key={algorithm.name}>
+                <Component />
+              </div>
+            );
             return <>{elements}</>;
           })()}
         </div>
 
-        {/* Complexity Information */}
-        <Complexity
-          timeComplexity={algorithm.properties.timeComplexity}
-          spaceComplexity={algorithm.properties.spaceComplexity}
-        />
+        {/* Complexity Info */}
+        {meta && (
+          <Complexity
+            timeComplexity={meta.properties.timeComplexity}
+            spaceComplexity={meta.properties.spaceComplexity}
+          />
+        )}
 
         {/* Graphs */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <ComplexityGraph
-            title="Time Complexity"
-            complexity={algorithm.properties.timeComplexity}
-            className="bg-card"
-          />
-          <ComplexityGraph
-            title="Space Complexity"
-            complexity={algorithm.properties.spaceComplexity}
-            className="bg-card"
-          />
-        </div>
+        {meta && (
+          <div className="grid md:grid-cols-2 gap-8">
+            <ComplexityGraph
+              title="Time Complexity"
+              complexity={meta.properties.timeComplexity}
+              className="bg-card"
+            />
+            <ComplexityGraph
+              title="Space Complexity"
+              complexity={meta.properties.spaceComplexity}
+              className="bg-card"
+            />
+          </div>
+        )}
 
         {/* Code Block */}
         <div className="grid md:grid-cols-2 gap-8">
-          {codeContent && <CodeBlock code={codeContent} input={"1,2,3,4"} />}
+          {codeContent && (
+            <CodeBlock code={codeContent} input={data} algo={algorithm.name} />
+          )}
+          <AlgorithmAnimation algoName={algorithm.name} />
         </div>
       </div>
     </main>

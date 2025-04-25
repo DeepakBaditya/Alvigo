@@ -2,6 +2,8 @@
 export type categoryAlgorithm = {
   id: string;
   name: string;
+  description: string;
+  properties: properties;
 };
 
 // Type for a category document
@@ -19,11 +21,34 @@ export type properties = {
   timeComplexity: string;
   spaceComplexity: string;
 };
+
 export type algorithm = {
   id: string;
   name: string;
   category: string;
   codePath: string;
-  input: Object;
-  properties: properties;
 };
+
+export type Edge = {
+  from: number;
+  to: number;
+  weight: number;
+};
+
+export type mapInput = {
+  string1: string;
+  string2: string;
+};
+
+export type lineraSearchInput = {
+  array: number[];
+  target: number;
+};
+
+export type DataType =
+  | string
+  | number[]
+  | mapInput
+  | Edge[]
+  | lineraSearchInput
+  | null; // Can be a string, array, graph, or null
