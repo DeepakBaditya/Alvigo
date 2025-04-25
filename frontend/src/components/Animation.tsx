@@ -18,6 +18,7 @@ import QuickSort from "./animations/QuickSort";
 import BubbleSort from "./animations/BubbleSort";
 import LinearSearch from "./animations/LinearSearch";
 import BinarySearch from "./animations/BinarySearch";
+import SelectionSort from "./animations/SelectionSort";
 import JumpSearch from "./animations/JumpSearch";
 import Prims from "./animations/Prims";
 import { useDataStore } from "@/store/useDataStore";
@@ -45,6 +46,7 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
     Prims: Prims,
     "Quick Sort": QuickSort,
     "Bubble Sort": BubbleSort,
+    "Selection Sort": SelectionSort,
     "Linear Search": LinearSearch,
     "Binary Search": BinarySearch,
     "Jump Search": JumpSearch,
@@ -126,7 +128,7 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
       if (Array.isArray(data)) {
         const edges = data as Edge[];
         const numberOfSteps = edges.length;
-        setMaxSteps(numberOfSteps);
+        setMaxSteps(50);
       } else {
         setMaxSteps(0);
       }
@@ -141,6 +143,10 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
       setMaxSteps(totalSteps);
     } else if (algoName == "Bubble Sort") {
       setMaxSteps(50);
+    } else if (algoName == "Selection Sort") {
+      const array = Array.isArray(data) ? [...(data as number[])] : [];
+      const n = array.length;
+      setMaxSteps(n * n - 1);
     } else if (algoName == "Linear Search") {
       if (
         typeof data === "object" &&
@@ -159,7 +165,7 @@ const AlgorithmAnimationPlayer: React.FC<AlgorithmAnimationPlayerProps> = ({
         "target" in data
       ) {
         const n = data.array.length;
-        setMaxSteps(n);
+        setMaxSteps(50);
       }
     } else if (algoName == "Jump Search") {
       if (
