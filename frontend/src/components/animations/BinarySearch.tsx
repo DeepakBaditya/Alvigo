@@ -1,103 +1,142 @@
 "use client";
+
 import React from "react";
 import { motion } from "framer-motion";
 import { useDataStore } from "@/store/useDataStore";
 
 interface Step {
+  type: "compare" | "found" | "search";
   low: number;
-  high: number;
   mid: number;
+  high: number;
   array: number[];
-  found: boolean;
   message: string;
+}
+
+interface BinarySearchAnimationProps {
+  currentStep: number;
 }
 
 export default function BinarySearchAnimation({
   currentStep,
-}: {
-  currentStep: number;
-}) {
+}: BinarySearchAnimationProps) {
   const data = useDataStore((state) => state.data);
-  const target = useDataStore((state: any) => state.target);
 
   if (
-    !data ||
-    !Array.isArray(data) ||
-    typeof target !== "number" ||
-    data.length === 0
+    typeof data !== "object" ||
+    data === null ||
+    !("array" in data) ||
+    !("target" in data)
   )
-    return (
-      <div className="text-center text-red-500">Invalid input or target</div>
-    );
+    return <div className="text-red-500">Invalid input</div>;
 
-  const originalArray = [...(data as number[])].sort((a, b) => a - b);
+  const array = [...(data as { array: number[] }).array].sort((a, b) => a - b);
+  const target = (data as { target: number }).target;
 
   const steps: Step[] = [];
 
   const recordStep = (
+    type: Step["type"],
     low: number,
-    high: number,
     mid: number,
+    high: number,
     array: number[],
-    found: boolean,
     message: string
   ) => {
-    steps.push({ low, high, mid, array: [...array], found, message });
+    steps.push({
+      type,
+      low,
+      mid,
+      high,
+      array: [...array],
+      message,
+    });
   };
 
-  const binarySearch = (arr: number[], target: number) => {
+  const generateSteps = () => {
     let low = 0;
-    let high = arr.length - 1;
+    let high = array.length - 1;
 
     while (low <= high) {
       const mid = Math.floor((low + high) / 2);
-      if (arr[mid] === target) {
-        recordStep(low, high, mid, arr, true, `Target found at index ${mid}`);
-        break;
-      } else if (arr[mid] < target) {
-        recordStep(low, high, mid, arr, false, `Searching right half`);
+      recordStep(
+        "compare",
+        low,
+        mid,
+        high,
+        array,
+        `Comparing mid index ${mid}`
+      );
+      if (array[mid] === target) {
+        recordStep(
+          "found",
+          low,
+          mid,
+          high,
+          array,
+          `Found target at index ${mid}`
+        );
+        return;
+      } else if (array[mid] < target) {
+        recordStep(
+          "search",
+          low,
+          mid,
+          high,
+          array,
+          `Target greater than ${array[mid]}`
+        );
         low = mid + 1;
       } else {
-        recordStep(low, high, mid, arr, false, `Searching left half`);
+        recordStep(
+          "search",
+          low,
+          mid,
+          high,
+          array,
+          `Target less than ${array[mid]}`
+        );
         high = mid - 1;
       }
     }
 
-    if (
-      steps.length === 0 ||
-      steps[steps.length - 1].array[steps[steps.length - 1].mid] !== target
-    ) {
-      recordStep(-1, -1, -1, arr, false, "Target not found");
-    }
+    recordStep("search", -1, -1, -1, array, `Target not found`);
   };
 
-  binarySearch(originalArray, target);
+  generateSteps();
   const step = steps[Math.min(currentStep, steps.length - 1)];
 
-  return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-4">
-      <div className="flex gap-2 items-end h-64 w-full max-w-3xl justify-center relative">
-        {step.array.map((val, idx) => {
-          let bg = "bg-gray-300";
-          if (idx === step.mid) bg = "bg-yellow-400";
-          if (idx === step.low) bg = "bg-blue-400";
-          if (idx === step.high) bg = "bg-red-400";
-          if (step.found && idx === step.mid) bg = "bg-green-500";
+  const getColor = (index: number): string => {
+    if (step.type === "found" && index === step.mid) return "bg-green-500";
+    if (index === step.mid) return "bg-yellow-400";
+    if (index >= step.low && index <= step.high) return "bg-blue-300";
+    return "bg-gray-300";
+  };
 
-          return (
-            <motion.div
-              key={idx}
-              className={`w-10 text-xs text-center text-white rounded-t-md ${bg}`}
-              style={{ height: `${val * 20}px` }}
-              layout
-              transition={{ duration: 0.3 }}
-            >
-              {val}
-            </motion.div>
-          );
-        })}
+  return (
+    <div className="flex flex-col items-center p-4 space-y-6">
+      <div className="flex gap-2 items-end justify-center">
+        {step.array.map((val, idx) => (
+          <motion.div
+            key={idx}
+            className={`w-10 h-16 rounded-md text-white flex items-center justify-center ${getColor(
+              idx
+            )}`}
+            layout
+            transition={{ duration: 0.3 }}
+          >
+            {val}
+          </motion.div>
+        ))}
       </div>
-      <div className="mt-4 text-sm text-gray-700 font-medium text-center">
+
+      <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+        {step.low >= 0 && <div>Low: {step.low}</div>}
+        {step.mid >= 0 && <div>Mid: {step.mid}</div>}
+        {step.high >= 0 && <div>High: {step.high}</div>}
+      </div>
+
+      <div className="text-sm font-medium text-center text-gray-800">
         {step.message}
       </div>
     </div>

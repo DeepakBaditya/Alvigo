@@ -67,6 +67,29 @@ export function CodeBlock({ code, input, algo }: CodeBlockProps) {
         }
         return updatedContent;
 
+      case "Selection Sort":
+        const array4 = input?.toString().split(",").map(Number);
+        if (language === "python") {
+          // Replace specific text (e.g., replace "old text" with "new text")
+          updatedContent = code.replace(
+            /arr\s*=\s*\[.*?\]/,
+            `arr = ${JSON.stringify(array4)}`
+          );
+        } else if (language === "java") {
+          const newArrayString = `int[] arr = {${array4?.join(", ")}};`;
+          updatedContent = code.replace(
+            /int\[\]\s*arr\s*=\s*\{.*?\};/,
+            newArrayString
+          );
+        } else if (language === "c") {
+          const newArrayString = `int arr[] = {${array4}};`;
+          updatedContent = code.replace(
+            /int\s+arr\[\]\s*=\s*\{.*?\};/,
+            newArrayString
+          );
+        }
+        return updatedContent;
+
       case "Bubble Sort":
         const array2 = input?.toString().split(",").map(Number);
         if (language === "python") {

@@ -28,6 +28,7 @@ const InputComponents: Record<string, React.FC<{}>> = {
   Prims: () => <PrimsInput onGraphChange={() => {}} />,
   "Quick Sort": () => <MinMaxInput />,
   "Bubble Sort": () => <MinMaxInput />,
+  "Selection Sort": () => <MinMaxInput />,
   "Linear Search": () => <LinearSearchInput algoName="Linear Search" />,
   "Binary Search": () => <LinearSearchInput algoName="Binary Search" />,
   "Jump Search": () => <LinearSearchInput algoName="Jump Search" />,
@@ -65,7 +66,8 @@ const AlgorithmPage = () => {
           if (
             algorithmData.name == "Min And Max" ||
             algorithmData.name == "Quick Sort" ||
-            algorithmData.name == "Bubble Sort"
+            algorithmData.name == "Bubble Sort" ||
+            algorithmData.name == "Selection Sort"
           ) {
             setData([3, 5, 1, 9, 2, 8, 7, 6]);
           } else if (
@@ -127,7 +129,7 @@ const AlgorithmPage = () => {
           <div className="flex items-center justify-center gap-3">
             <Brain className="w-10 h-10 text-primary" />
             <h1 className="text-4xl font-bold text-primary">
-              Algorithm Complexity Visualizer
+              Algorithm Visualizer
             </h1>
           </div>
           <p className="text-muted-foreground text-lg">
